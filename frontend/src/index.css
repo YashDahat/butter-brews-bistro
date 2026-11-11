@@ -1,0 +1,108 @@
+/* design: concept=ensō (Zen one-stroke brush circle) read as the bagel ring x Pune bakery "fresh bake" board & jun-kissaten espresso bar; palette=espresso #1C1311 / crema #F3EAD7 + cocoa #4A2F2F / butter-gold #E7B649; display=Rozha One (Devanagari+Latin high-contrast display); body=Figtree; hero=dark split poster: one giant brush ensō ring framing the live "Out of the oven" board, wordmark set left with बटर ब्रूज़ accent; signature-motion=the ensō brush stroke draws itself once around the bake board, then hanko ring-stamps press onto earned coins and checklist steps */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Day: crema paper, cocoa ink, butter-gold accent */
+  :root {
+    --background: 39 58% 92%;
+    --foreground: 10 24% 11%;
+    --card: 40 60% 96%;
+    --card-foreground: 10 24% 11%;
+    --popover: 40 60% 96%;
+    --popover-foreground: 10 24% 11%;
+    --primary: 0 22% 24%;
+    --primary-foreground: 39 58% 92%;
+    --secondary: 38 42% 84%;
+    --secondary-foreground: 10 24% 14%;
+    --muted: 38 40% 86%;
+    --muted-foreground: 12 14% 32%;
+    --accent: 41 77% 60%;
+    --accent-foreground: 10 24% 11%;
+    --destructive: 2 64% 40%;
+    --destructive-foreground: 39 58% 95%;
+    --border: 33 30% 74%;
+    --input: 33 30% 66%;
+    --ring: 36 80% 42%;
+    --radius: 0.375rem;
+
+    --espresso: 10 24% 9%;
+    --crema: 39 58% 90%;
+    --butter: 41 77% 60%;
+    --cocoa: 0 22% 24%;
+    --veg: 123 46% 34%;
+    --nonveg: 2 64% 40%;
+  }
+  /* Night: espresso ground, crema type, butter-gold primary */
+  .dark {
+    --background: 10 24% 8%;
+    --foreground: 39 50% 88%;
+    --card: 12 22% 12%;
+    --card-foreground: 39 50% 88%;
+    --popover: 12 22% 12%;
+    --popover-foreground: 39 50% 88%;
+    --primary: 41 77% 60%;
+    --primary-foreground: 10 24% 9%;
+    --secondary: 12 18% 18%;
+    --secondary-foreground: 39 50% 88%;
+    --muted: 12 18% 16%;
+    --muted-foreground: 36 22% 70%;
+    --accent: 41 77% 60%;
+    --accent-foreground: 10 24% 9%;
+    --destructive: 4 70% 58%;
+    --destructive-foreground: 10 24% 8%;
+    --border: 14 16% 24%;
+    --input: 14 16% 30%;
+    --ring: 41 77% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    font-family: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  :focus-visible { outline: 3px solid hsl(var(--ring)); outline-offset: 2px; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+}
+
+@layer components {
+  .font-display { font-family: 'Rozha One', 'Figtree', serif; font-weight: 400; letter-spacing: 0.005em; }
+  .bb-espresso { background-color: hsl(var(--espresso)); color: hsl(var(--crema)); }
+  .bb-kicker { font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; }
+  .bb-rule { height: 1px; background: currentColor; opacity: 0.25; }
+  /* Thin bakery-board grid lines behind the hero board */
+  .bb-board {
+    background-image: repeating-linear-gradient(0deg, transparent 0 39px, hsl(var(--crema) / 0.08) 39px 40px);
+  }
+  .bb-grain { background-image: radial-gradient(hsl(var(--crema) / 0.06) 1px, transparent 1px); background-size: 5px 5px; }
+  .bb-tap { min-height: 44px; min-width: 44px; }
+}
+
+/* Motion (transform / opacity only; all of it off with reduced motion) */
+@keyframes bb-enso-draw { from { stroke-dashoffset: var(--len, 1400); } to { stroke-dashoffset: 0; } }
+@keyframes bb-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes bb-stamp { 0% { opacity: 0; transform: scale(1.35) rotate(-8deg); } 60% { opacity: 1; transform: scale(0.94) rotate(-8deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+
+.bb-enso-stroke { stroke-dasharray: var(--len, 1400); animation: bb-enso-draw 700ms cubic-bezier(.6,.05,.3,1) 150ms both; }
+.bb-hero-in { animation: bb-fade-up 600ms ease-out 450ms both; }
+.bb-stamp-in { animation: bb-stamp 420ms cubic-bezier(.3,1.4,.5,1) both; }
+
+/* Reveal: content is visible by default; JS adds .bb-reveal-armed only when it can observe, then .is-in */
+.bb-reveal-armed { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease-out, transform 600ms ease-out; }
+.bb-reveal-armed.is-in { opacity: 1; transform: none; }
+
+.bb-timeline-fill { transform-origin: top; transition: transform 200ms linear; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-enso-stroke, .bb-hero-in, .bb-stamp-in { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; }
+  .bb-reveal-armed { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .bb-timeline-fill { transition: none !important; }
+  * { scroll-behavior: auto !important; }
+}
